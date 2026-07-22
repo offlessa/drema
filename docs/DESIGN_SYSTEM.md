@@ -1,55 +1,54 @@
-# Drema — Design System (v0, ponto de partida)
+# Drema — Design System (v0, implementado)
 
-Isto não substitui o trabalho no Figma — é a base de tokens e princípios que orienta tanto o Figma quanto os componentes React, para que os dois não divirjam.
+> Paleta e tipografia abaixo refletem o que está em `web/src/index.css` (tokens Tailwind v4 via `@theme`). Pivotado de um placeholder terracota para uma paleta premium creme/verde-amarronzado/dourado, pedida explicitamente para posicionar a marca como "realizar sonhos", inspirada em Houzz/Apple/Pinterest.
 
 ## 1. Princípios
 
-- **Confiança antes de estética.** O produto lida com decisões caras (construir, reformar, contratar). Cada tela deve responder "onde estou, o que falta, em quem confio" — nunca deixar o usuário sem saber o próximo passo.
-- **Comparação é o momento decisivo.** A tela de comparar propostas é o coração do produto — merece o maior cuidado visual de todo o MVP.
-- **Mobile-first.** Profissionais autônomos usam celular como ferramenta de trabalho no canteiro de obras.
+- **Confiança antes de estética.** Decisões caras (construir, reformar, contratar) exigem que o usuário sempre saiba onde está e em quem confiar.
+- **A tela de resultado do match é o momento decisivo** — merece o maior cuidado visual do MVP: é onde o cliente decide em quem confiar.
+- **Mobile-first**, mas com respiro visual — a referência é editorial (Houzz), não utilitária.
 
-## 2. Cor (tokens, placeholder até definir marca no Figma)
+## 2. Cor (implementado em `index.css`)
 
-| Token | Uso | Placeholder |
+| Token | Valor | Uso |
 |---|---|---|
-| `--color-primary` | ações principais, links, foco | a definir (sugestão: terracota/laranja queimado — remete a construção/terra sem ser genérico como azul de fintech) |
-| `--color-primary-hover` | | tom -10% luminosidade |
-| `--color-success` | proposta aceita, status positivo | verde |
-| `--color-warning` | pendente, aguardando | amarelo/âmbar |
-| `--color-danger` | recusado, expirado | vermelho |
-| `--color-neutral-900` a `--color-neutral-50` | texto, bordas, fundos | escala de cinza |
+| `--color-cream` | `#f7f2e8` | fundo base |
+| `--color-cream-dark` | `#efe7d6` | fundo de cards secundários, badges neutros |
+| `--color-ink` | `#2b2a24` | texto principal |
+| `--color-muted` | `#6c6559` | texto secundário |
+| `--color-border` | `#e3dac6` | bordas |
+| `--color-primary` | `#4f5f3f` (verde-amarronzado) | ações principais, links, foco |
+| `--color-primary-hover` | `#3d4a31` | |
+| `--color-gold` | `#b6905a` (dourado discreto) | destaques pontuais — eyebrow text, badges de especialidade, nunca em área grande |
+| `--color-success` / `--color-warning` / `--color-danger` | verde/âmbar/terracota mutados | status (compatibilidade, pendências) — tons dessaturados para não destoar da paleta quente |
 
-**Recomendação:** evitar azul como cor primária — é a cor "padrão" de todo SaaS/marketplace (Loft, QuintoAndar, a maioria dos concorrentes usam tons de azul/verde). Uma cor terrosa (terracota, ocre) reforça o posicionamento "construção civil" e diferencia visualmente de cara.
+Evitado de propósito: azul (cor "padrão" de SaaS/marketplace — Loft, QuintoAndar) e branco puro como fundo dominante (fica frio; creme mantém o "premium quente" pedido).
 
 ## 3. Tipografia
 
-- Fonte: uma sans-serif humanista (ex: Inter, ou Sora para títulos com mais personalidade) — legível em telas pequenas, comum em produtos B2B/B2C sérios.
-- Escala: `text-xs` (12) `text-sm` (14) `text-base` (16) `text-lg` (18) `text-xl` (20) `text-2xl` (24) `text-3xl` (30) — escala padrão Tailwind, não reinventar.
+- **Serif de destaque:** Fraunces — títulos (`font-serif`), dá o tom editorial/arquitetônico.
+- **Sans para UI:** Inter — corpo de texto, formulários, botões.
+- Carregadas via Google Fonts em `index.html`. Escala Tailwind padrão, sem customização.
 
 ## 4. Espaçamento
 
-Escala de 4px (padrão Tailwind: 1=4px, 2=8px, 4=16px, 6=24px, 8=32px...). Não criar escala customizada — consistência com a lib de utilitários evita decisões ad-hoc a cada tela.
+Escala padrão Tailwind (4px). Sem escala customizada.
 
-## 5. Componentes base (necessários para o MVP)
+## 5. Componentes base (implementados em `web/src/components/`)
 
 | Componente | Onde é usado |
 |---|---|
-| `Button` (primary/secondary/ghost, com estado loading/disabled) | em toda ação |
-| `Input`, `Textarea`, `Select` | formulários (necessidade, proposta, cadastro) |
-| `Card` | listagens (necessidades, oportunidades) |
-| `StatusBadge` | status de necessidade/oportunidade/proposta — cor semântica consistente em todo o app |
-| `ProposalCard` | comparação de propostas — componente mais importante do produto |
-| `ProfessionalAvatarCard` | identificação resumida do profissional (nome, especialidade, cidade) |
-| `ChatBubble` + `ChatInput` | tela de mensagens |
-| `EmptyState` | listas vazias (nenhuma necessidade, nenhuma oportunidade ainda) |
-| `Toast/Alert` | feedback de ações (proposta enviada, etc.) |
+| `Button` (primary/secondary/ghost, loading) | toda ação |
+| `Input`, `Select` | formulários (cadastro, questionário, onboarding profissional) |
+| `MatchCard` | resultado do match — card com score de compatibilidade, o componente mais importante do produto |
+| Cards de perfil, lead e conversa | compostos ad-hoc nas páginas por ora (`Dashboard`, `ProfessionalProfilePage`) — extrair para componentes reutilizáveis se o padrão se repetir mais |
 
-Construir esses ~9 componentes primeiro, genéricos e reutilizáveis (props claras, sem lógica de negócio dentro deles) — todas as 15 telas do MVP são composições desses blocos.
+Ainda não extraídos como componentes genéricos (deliberado — esperar repetição real antes de abstrair): `StatusBadge`, `EmptyState`, `Toast`. Hoje cada tela resolve isso inline.
 
 ## 6. Tom de voz
 
-Direto, sem jargão técnico de construção civil nem jargão de startup. O cliente típico não sabe o que é "ART" ou "sondagem" — a UI deve explicar em uma frase quando usar termos técnicos (tooltip/hint), nunca assumir conhecimento prévio.
+Direto, sem jargão técnico nem jargão de startup. Termos técnicos (ex: "ART") sempre explicados em uma frase quando aparecerem.
 
 ## 7. Próximo passo real (Figma)
 
-Este documento é suficiente para começar a codar UI com Tailwind usando os tokens acima. O Figma entra quando vocês quiserem validar fluxo visual com usuários reais antes de codar cada tela nova — não é bloqueante para o MVP inicial, que pode nascer direto em código com esses tokens.
+Ainda não bloqueante — o MVP nasceu direto em código com esses tokens. Vale considerar Figma quando a galeria de inspiração (fase 1 do roadmap) entrar em cena, por ser uma peça mais visual/editorial.

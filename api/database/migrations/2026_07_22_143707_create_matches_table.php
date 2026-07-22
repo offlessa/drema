@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('matches', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('project_brief_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('professional_profile_id')->constrained()->cascadeOnDelete();
+            $table->unsignedTinyInteger('compatibility_score');
+            $table->enum('status', ['pending', 'chatting', 'closed'])->default('pending');
+            $table->timestamps();
+            $table->unique(['project_brief_id', 'professional_profile_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('matches');
+    }
+};

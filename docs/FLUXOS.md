@@ -1,87 +1,59 @@
 # Drema — Fluxos (MVP)
 
+> Substitui a versão anterior (necessidade → matching automático em massa → propostas). O fluxo atual é uma jornada guiada: o cliente escolhe um profissional entre os compatíveis, em vez do sistema empurrar a necessidade para vários profissionais responderem.
+
 ## 1. Cadastro e login
 
-```
-Visitante → Escolhe "Sou cliente" ou "Sou profissional"
-          → Cadastro (nome, e-mail, senha, cidade)
-          → [se profissional] Onboarding de perfil (specialties, bio, documento)
-             → status = pending → fica em curadoria manual (vocês aprovam no início — não escala,
-               mas no MVP com poucos profissionais é o jeito certo de garantir qualidade)
-          → Login
-```
+Igual ao desenho original: cliente ou profissional escolhem o papel no cadastro. Profissional preenche o onboarding (`/perfil-profissional`) e fica com `status=pending` até aprovação manual — decisão consciente de manter curadoria humana enquanto o volume for baixo (ver [BANCO_DE_DADOS.md](BANCO_DE_DADOS.md)).
 
-**Decisão de produto:** no MVP, aprovação de profissional é manual (vocês olham cada cadastro). Automatizar isso cedo é otimizar um problema que vocês ainda não têm (volume). Manual também vira uma vantagem: vocês aprendem quem são os bons profissionais da região antes de qualquer algoritmo.
-
-## 2. Cliente cria uma necessidade
+## 2. Cliente descreve o projeto (Telas 4–5 do brief original)
 
 ```
-Cliente logado → "Nova necessidade"
-              → Escolhe categoria/especialidade (lista fixa)
-              → Descreve o que precisa (título + descrição)
-              → Informa orçamento (opcional) e confirma cidade
-              → Submete → status: open
-              → Sistema dispara matching (síncrono ou job em fila)
+Cliente logado → "Iniciar novo projeto" → escolhe objetivo (goal)
+              → responde questionário guiado (localização, área, ambientes, estilo,
+                orçamento, prazo, referências, descrição livre)
+              → submete → cria project_brief
+              → sistema calcula compatibilidade com todos os profissionais aprovados
+                (MatchingService) e persiste até 5 matches (score ≥ 30) em `matches`
+              → cliente é redirecionado para a tela de resultados
 ```
 
-## 3. Matching (sistema seleciona profissionais)
+## 3. Resultado do match
 
 ```
-Job de matching é acionado quando need.status = open
-  → Filtra professional_profiles: status=approved, specialty match, city dentro do raio de atuação
-  → Ordena por: (1) avaliação futura — no MVP não existe, usar (2) profissionais com menos oportunidades
-    abertas no momento (distribuir oportunidade, não sempre os mesmos) e (3) mais recentes/ativos
-  → Seleciona N profissionais (ex: até 5)
-  → Cria registros em opportunities (status=sent) + notifica por e-mail
-  → need.status → matching
+Cliente vê cards ordenados por compatibilidade (nome, empresa, especialidade,
+localização, estilos, "X% compatível")
+              → clica em um card → vê o perfil completo do profissional
+              → clica em "Tenho interesse"
+                    → match.status → chatting
+                    → conversation é criada automaticamente
+                    → tela mostra "É uma combinação!" e redireciona para o chat
 ```
 
-**Nota:** "melhores profissionais considerando avaliações/disponibilidade" do briefing original pressupõe dado histórico que não existe ainda. No MVP o critério é simples e honesto (match de categoria + cidade + distribuição justa). Sofisticar o ranking é trabalho de fase 2, com dado real de avaliações.
+Diferença importante do desenho anterior: **o cliente é quem inicia o contato**, escolhendo entre os compatíveis — o profissional não precisa aceitar/recusar antes do chat abrir. Isso é mais simples de implementar e mais parecido com a experiência "Tinder de profissionais" do briefing. Se isso gerar volume de contato indesejado para os profissionais, o ajuste natural é dar a eles a opção de "pausar" recebimento de leads no próprio perfil — não implementado ainda.
 
-## 4. Profissional recebe e responde oportunidade
-
-```
-Profissional → Dashboard → "Oportunidades" (opportunities onde status=sent/viewed)
-            → Abre oportunidade → status → viewed
-            → Decide: enviar proposta OU recusar
-                 → Envia proposta (preço, prazo, mensagem)
-                     → opportunity.status → proposal_sent
-                     → proposal criada (status=pending)
-                     → need.status → proposals_received
-                 → Recusa
-                     → opportunity.status → declined
-            → Se não responder em 48h → opportunity.status → expired (job agendado)
-```
-
-## 5. Cliente compara e escolhe
+## 4. Profissional recebe o lead
 
 ```
-Cliente → Detalhe da necessidade → lista de propostas recebidas (lado a lado: preço, prazo, perfil do profissional)
-       → Cliente aceita uma proposta
-            → proposal.status → accepted
-            → demais proposals da mesma need → status permanece pending/rejected (cliente pode rejeitar
-              explicitamente as outras, ou elas ficam "não escolhidas" implicitamente)
-            → conversation é criada automaticamente (client + professional)
-            → need.status → closed
+Profissional → Dashboard → lista de leads (matches onde ele é o profissional),
+              ordenados por compatibilidade, mostrando resumo do projeto (objetivo,
+              área, cidade, orçamento) e o score
+              → se já existe conversation (cliente demonstrou interesse), tem link
+                direto para o chat
 ```
 
-**Decisão:** o briefing diz "só depois conversa" — ou seja, chat só abre após aceite de proposta. Isso é uma escolha de produto forte e correta para o MVP: evita que profissionais tentem contornar a plataforma negociando fora dela antes de haver comprometimento (e protege uma futura fonte de receita por comissão).
+Não existe mais o conceito de "recusar oportunidade" — como o cliente já escolheu ativamente aquele profissional, o próximo passo é sempre a conversa.
 
-## 6. Chat
+## 5. Chat
+
+Igual ao desenho original: mensagens simples, sem marcos ou anexos formais. Hoje via polling (refetch a cada 4s) — WebSocket (Pusher, já previsto em [ARQUITETURA.md](ARQUITETURA.md)) é upgrade natural quando o volume justificar.
+
+## 6. Estado vazio / sem match
 
 ```
-Conversation criada → ambas as partes veem no menu "Mensagens"
-                    → troca de mensagens (polling ou websocket via Pusher)
-                    → sem workflow adicional no MVP (sem marcos, sem anexos de contrato — texto simples)
+Se nenhum profissional aprovado atinge o score mínimo (30):
+  matches fica vazio → tela de resultados mostra "ainda não temos profissionais
+  compatíveis" em vez de uma lista vazia sem explicação
 ```
 
-## 7. Estado vazio / sem match
-
-Se o matching não encontra nenhum profissional (cidade sem cobertura ainda):
-```
-need.status → open, mas sem opportunities criadas
-→ Cliente vê mensagem: "Ainda não temos profissionais dessa especialidade na sua região.
-   Avisaremos assim que houver disponibilidade." + captura interesse (sinal de demanda para
-   priorizar recrutamento de profissionais naquela categoria/região)
-```
-Esse é um fluxo pequeno, mas importante: em duas pontas de marketplace, o dia 1 quase sempre tem lado vazio. Tratar isso como dado de negócio (onde recrutar profissionais) em vez de erro silencioso é o que separa marketplace que morre de marketplace que aprende.
+Mesma lógica de antes: isso é sinal de negócio (onde recrutar profissionais), não erro — mas ainda não há captura automática desse interesse (ex: notificar o cliente quando surgir um profissional compatível). Fica para quando o volume de "zero match" for grande o suficiente para valer a pena.

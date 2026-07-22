@@ -1,7 +1,7 @@
 # Drema — Arquitetura (MVP)
 
-> Escopo: apenas o loop essencial do MVP (cadastro → necessidade → oportunidade → proposta → chat).
-> A visão completa (jornadas automáticas, histórico do imóvel, IA) está em [ROADMAP.md](ROADMAP.md) como direção, não como especificação.
+> Escopo: o loop essencial do MVP — cadastro → questionário guiado → match com score de compatibilidade → chat (ver [FLUXOS.md](FLUXOS.md)). A stack e a topologia abaixo continuam válidas após o pivot para o fluxo de match guiado; só o domínio de negócio mudou (ver [BANCO_DE_DADOS.md](BANCO_DE_DADOS.md)).
+> A visão completa (jornadas automáticas, histórico do imóvel, galeria de inspiração, IA real) está em [ROADMAP.md](ROADMAP.md) como direção, não como especificação.
 
 ## 1. Decisão de topologia
 
@@ -27,7 +27,8 @@ Vocês vão ter dois públicos com jornadas bem diferentes (cliente vs. profissi
 | Estado remoto | TanStack Query | cache/refetch de API, evita reinventar loading/error state |
 | Estilo | Tailwind CSS | velocidade de execução solo + consistência via design tokens |
 | Backend | Laravel 11 (API only, `laravel new drema-api --api`) | |
-| Auth | Laravel Sanctum (SPA token-based) | mais simples que OAuth completo para MVP; migrar para Passport só se precisar de OAuth de terceiros |
+| Auth | Laravel Sanctum (SPA stateful, cookie de sessão) | mais simples que OAuth completo para MVP; migrar para Passport só se precisar de OAuth de terceiros |
+| Roteamento (front) | React Router | rotas protegidas por papel (cliente/profissional) |
 | Banco | MySQL 8 | conforme definido |
 | Filas/Jobs | Laravel Queue (driver `database` no MVP, migrar para Redis quando houver volume) | envio de notificações, matching de profissionais |
 | Chat | Laravel Reverb (WebSockets nativo) ou Pusher (gerenciado) | recomendo começar com **Pusher** (free tier) — zero infra para gerenciar solo; migrar para Reverb quando o custo justificar |

@@ -1,8 +1,8 @@
 # Drema — Documentação
 
-"Do sonho ao imóvel." Plataforma que conecta clientes a profissionais da construção civil, começando pelo loop essencial: necessidade → matching → proposta → chat.
+"Do sonho ao imóvel." Plataforma que conecta clientes a profissionais da construção civil através de uma jornada guiada: o cliente descreve o projeto, recebe profissionais com score de compatibilidade explicável, escolhe um e conversa.
 
-Escopo destes documentos: **MVP**, validado em uma cidade/região piloto, por um founder solo (com apoio de IA). A visão de longo prazo (jornada automática, histórico do imóvel, IA de matching) está registrada como direção no roadmap, não especificada em detalhe — evita retrabalho quando o mercado responder.
+Escopo destes documentos: **MVP**, validado em uma cidade/região piloto, por um founder solo (com apoio de IA). A visão de longo prazo (jornada automática, histórico do imóvel, IA de matching real, galeria de inspiração) está registrada como direção no roadmap, não especificada em detalhe — evita retrabalho quando o mercado responder.
 
 ## Índice
 
@@ -13,6 +13,8 @@ Escopo destes documentos: **MVP**, validado em uma cidade/região piloto, por um
 5. [Design System](DESIGN_SYSTEM.md) — tokens e componentes base
 6. [Roadmap](ROADMAP.md) — fases pós-MVP e critério para avançar entre elas
 
-## Próximo passo
+## Estado atual
 
-Com a documentação do MVP fechada, o próximo passo é começar o desenvolvimento: scaffolding do backend Laravel (`api/`) e frontend React (`web/`), começando pelas tabelas e endpoints de autenticação + necessidades. Avise quando quiser seguir para essa etapa.
+O loop essencial está implementado e validado ponta a ponta: cadastro (cliente/profissional), onboarding profissional, questionário guiado, cálculo de compatibilidade, match, chat. Rode `api/` e `web/` conforme o [README raiz](../README.md).
+
+Pendências conhecidas, de propósito fora do escopo desta rodada: painel admin para aprovação de profissionais (hoje manual via banco), chat em tempo real (hoje é polling), galeria de inspiração.

@@ -1,122 +1,95 @@
 # Drema — Banco de Dados (MVP)
 
-MySQL 8. Convenção: tabelas no plural, snake_case, `id` bigint auto-increment, timestamps padrão Laravel (`created_at`, `updated_at`), soft deletes onde fizer sentido (dados que não podem sumir de vez: propostas, necessidades).
+> Este documento reflete o schema **efetivamente implementado** em `api/database/migrations/`. Substitui a versão anterior (baseada em `needs`/`opportunities`/`proposals`), trocada pelo fluxo de match guiado com score de compatibilidade — ver [FLUXOS.md](FLUXOS.md).
 
-## Diagrama lógico (MVP)
+MySQL 8. Convenção: tabelas no plural, snake_case, `id` bigint auto-increment, timestamps padrão Laravel.
+
+## Diagrama lógico
 
 ```
-users ──┬──< professional_profiles >──< professional_specialties >── specialties
-        │
-        └──< needs >──< opportunities >──< proposals
-                            │                  │
-                            │                  └── (proposal aceita vincula → conversations)
-                            │
-                        professional_profiles (FK)
-
-conversations ──< messages
+users ──┬──< professional_profiles >──< professional_style >── styles
+        │                                    │
+        └──< project_briefs >──< matches >───┘
+                    │                │
+                    │                └──< conversations >──< messages
+                 style (FK)
 ```
 
 ## Tabelas
 
 ### `users`
-Conta única para cliente e profissional (uma pessoa pode ser as duas coisas no futuro).
+Conta única para cliente e profissional.
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | id | bigint PK | |
-| name | string | |
-| email | string unique | |
-| password | string | hash |
+| name, email, password | string | |
+| role | enum('client','professional','admin') | role primária da conta |
 | phone | string nullable | |
-| role | enum('client','professional','admin') | role **primária** da conta — ver nota abaixo |
-| city | string | cidade para o piloto regional |
-| state | string(2) | UF |
-| email_verified_at | timestamp nullable | |
+| city, state | string | cidade/UF do usuário |
 | created_at / updated_at | timestamp | |
-
-> **Nota de design:** no MVP, `role` é suficiente (uma conta = um papel primário). Modelar "usuário pode ser cliente E profissional simultaneamente" adiciona complexidade de UI (trocar de contexto) que não se paga ainda. Se um profissional quiser postar uma necessidade como cliente, ele cria/usa uma conta separada por enquanto — decisão consciente de simplicidade, revisitar se virar reclamação recorrente.
 
 ### `professional_profiles`
-1:1 com `users` (role = professional).
+1:1 com `users` (role = professional). Onboarding profissional.
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | id | bigint PK | |
-| user_id | bigint FK → users | unique |
+| user_id | bigint FK → users, unique | |
+| professional_type | enum('architect','engineer','interior_designer','construction_company') | |
+| company_name | string nullable | |
 | bio | text nullable | |
-| document (CPF/CNPJ) | string | validação básica |
-| document_type | enum('cpf','cnpj') | |
-| service_radius_km | integer | raio de atuação a partir de `city` |
-| portfolio_url | string nullable | link externo no MVP (não upload de galeria ainda) |
-| status | enum('pending','approved','rejected') | curadoria manual no MVP — não automatizar aprovação ainda |
-| created_at / updated_at | timestamp | |
+| city, state | string | base para o score de localização |
+| service_radius_km | int | raio de atuação |
+| years_experience | int nullable | |
+| budget_min, budget_max | decimal nullable | faixa de investimento atendida — usada no score de orçamento |
+| portfolio_url | string nullable | link externo no MVP, sem galeria própria ainda |
+| status | enum('pending','approved','rejected') | curadoria manual |
 
-### `specialties`
-Catálogo fixo, curado por vocês (não user-generated no MVP).
+### `styles`
+Catálogo fixo (Contemporâneo, Moderno, Minimalista, Industrial, Rústico, Clássico, Escandinavo, Tropical), seedado via `StyleSeeder`.
 
-| Campo | Tipo | Notas |
-|---|---|---|
-| id | bigint PK | |
-| name | string | ex: "Projeto Estrutural", "Projeto Arquitetônico", "Topografia" |
-| category | enum('engenharia','arquitetura','construcao','fornecimento','outros') | agrupamento para UI |
-| slug | string unique | |
+### `professional_style`
+Pivot N:N entre `professional_profiles` e `styles` (estilos que o profissional trabalha).
 
-### `professional_specialties`
-Pivot N:N.
-
-| Campo | Tipo |
-|---|---|
-| professional_profile_id | FK |
-| specialty_id | FK |
-
-### `needs`
-A "necessidade" criada pelo cliente. **No MVP não é um workflow de etapas** — é um pedido único e simples.
+### `project_briefs`
+O questionário guiado preenchido pelo cliente (substitui a antiga `needs`).
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | id | bigint PK | |
 | client_id | bigint FK → users | |
-| specialty_id | bigint FK → specialties | categoria escolhida |
-| title | string | ex: "Preciso de projeto elétrico para casa de 120m²" |
-| description | text | |
-| city | string | herda do cliente, editável |
-| budget_min / budget_max | decimal nullable | opcional, cliente pode não saber |
-| status | enum('open','matching','proposals_received','closed') | |
-| created_at / updated_at | timestamp | |
+| goal | enum('build_house','renovate','interior_design','commercial_project','landscaping') | objetivo escolhido na Tela 2 |
+| city, state | string | |
+| area_m2 | int nullable | |
+| rooms_count | tinyint nullable | |
+| style_id | bigint FK → styles, nullable | estilo desejado |
+| budget_min, budget_max | decimal nullable | |
+| timeline | string nullable | |
+| description | text nullable | necessidades específicas |
+| reference_urls | json nullable | links de referência visual |
 
-### `opportunities`
-Um "match" entre uma necessidade e um profissional selecionado pelo sistema. Existe para rastrear quem foi convidado, mesmo que não responda.
+### `matches`
+Substitui `opportunities`+`proposals`. Criado automaticamente pelo `MatchingService` ao submeter um `project_brief` — já vem com o score calculado, não é um convite que o profissional aceita/recusa.
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | id | bigint PK | |
-| need_id | bigint FK → needs | |
+| project_brief_id | bigint FK | |
 | professional_profile_id | bigint FK | |
-| status | enum('sent','viewed','proposal_sent','declined','expired') | |
-| sent_at | timestamp | |
-| expires_at | timestamp | janela para responder (ex: 48h) — evita necessidade "presa" esperando profissional inativo |
+| compatibility_score | tinyint unsigned (0–100) | calculado por `MatchingService`, regra transparente — ver nota abaixo |
+| status | enum('pending','chatting','closed') | `chatting` quando o cliente demonstra interesse |
 
-### `proposals`
-| Campo | Tipo | Notas |
-|---|---|---|
-| id | bigint PK | |
-| opportunity_id | bigint FK → opportunities | unique (1 proposta por oportunidade) |
-| price | decimal | |
-| estimated_days | integer | prazo estimado |
-| message | text | |
-| status | enum('pending','accepted','rejected') | |
-| created_at / updated_at | timestamp | |
+> **Por que não é IA/black-box:** o score é uma soma de pesos explicáveis (tipo de profissional relevante para o objetivo, cidade/estado, sobreposição de orçamento, estilo em comum — ver `app/Services/MatchingService.php`). Sem histórico de matches/avaliações reais na plataforma, um modelo de ML não teria o que aprender; um "% de IA" fabricado seria só teatro. Isso vira modelo treinado de verdade quando houver dado real de matches aceitos/rejeitados para calibrar contra.
 
 ### `conversations`
-Criada automaticamente quando uma proposta é aceita.
+Criada quando o cliente demonstra interesse em um match (não depende de proposta formal aceita, diferente do desenho anterior).
 
 | Campo | Tipo |
 |---|---|
 | id | bigint PK |
-| need_id | bigint FK → needs |
-| proposal_id | bigint FK → proposals |
-| client_id | bigint FK → users |
-| professional_id | bigint FK → users |
+| match_id | bigint FK → matches, unique |
+| client_id, professional_id | bigint FK → users |
 
 ### `messages`
 | Campo | Tipo | Notas |
@@ -125,18 +98,11 @@ Criada automaticamente quando uma proposta é aceita.
 | conversation_id | bigint FK | |
 | sender_id | bigint FK → users | |
 | body | text | |
-| read_at | timestamp nullable | |
-| created_at | timestamp | |
-
-## Índices críticos desde o dia 1
-
-- `needs(status, city, specialty_id)` — a query mais frequente do sistema é "quais necessidades abertas nesta cidade/especialidade" (matching).
-- `opportunities(professional_profile_id, status)` — profissional listando suas oportunidades.
-- `messages(conversation_id, created_at)` — paginação de chat.
+| read_at | timestamp nullable | ainda não usado pela UI (sem indicador de lida) |
 
 ## O que fica de fora do MVP (de propósito)
 
-- Tabela de `reviews`/avaliações — sem histórico de propostas aceitas, não há dado confiável.
-- Tabela de `payments`/transações — matching primeiro, dinheiro depois.
-- Modelagem de "jornada" (steps, dependências entre etapas) — fica para quando o padrão de uso real mostrar quais sequências as pessoas realmente seguem. Modelar isso agora é apostar no que *achamos* que é a jornada, sem dado.
-- Histórico do imóvel (property, property_history) — é o grande diferencial de longo prazo do produto, mas depende de ter obras concluídas na plataforma primeiro. Entra no roadmap fase 2.
+- `reviews`/avaliações — sem match fechado suficiente, não há dado confiável ainda.
+- `payments`/transações.
+- Upload de fotos de portfólio / galeria de inspiração (estilo Houzz) — cold-start de conteúdo; entra depois de termos profissionais reais cadastrados. Ver [ROADMAP.md](ROADMAP.md).
+- Histórico do imóvel (property, property_history).

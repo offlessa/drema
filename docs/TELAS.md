@@ -1,42 +1,39 @@
 # Drema — Telas (MVP)
 
-Web responsivo (não app nativo). Layout pensado mobile-first — a maioria dos profissionais autônomos (eletricista, pedreiro, pequena empreiteira) usa celular como dispositivo primário.
+> Substitui a versão anterior (formulário simples de necessidade). O fluxo agora é uma jornada guiada de descoberta + match, conforme pivotado. Web responsivo, React + Vite + Tailwind, paleta creme/verde-amarronzado/dourado (ver [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)).
 
-## Públicas (sem login)
+## Públicas
 
-1. **Landing page** — proposta de valor, CTA "Sou cliente" / "Sou profissional". Pode ser página estática simples no MVP, sem investir em muito polimento ainda.
-2. **Cadastro** (com seletor de papel: cliente/profissional)
-3. **Login**
+1. **Landing** (`/`) — proposta de valor + CTA "Encontrar meu profissional"
+2. **Cadastro** (`/cadastro`) — com seletor cliente/profissional
+3. **Login** (`/login`)
 
-## Cliente
+## Jornada guiada do cliente (autenticado)
 
-4. **Dashboard do cliente** — lista de necessidades criadas, com status (aberta, em matching, com propostas, fechada) + botão "Nova necessidade"
-5. **Nova necessidade** — formulário: categoria, título, descrição, orçamento (opcional), cidade
-6. **Detalhe da necessidade** — status atual, lista de propostas recebidas (cards comparáveis: preço, prazo, perfil resumido do profissional), ação de aceitar
-7. **Perfil de profissional (visão do cliente)** — bio, especialidades, avaliações (placeholder no MVP — "em breve")
-8. **Mensagens** — lista de conversas + thread de chat
-9. **Meu perfil / configurações** — dados da conta, cidade
+4. **Objetivo** (`/comecar`) — "Qual é o seu objetivo?" (construir, reformar, interiores, comercial, área externa)
+5. **Questionário** (`/questionario`) — localização, área, ambientes, estilo, orçamento, prazo, referências visuais, necessidades específicas → submete e cria o `project_brief`
+6. **Resultado do match** (`/resultados/:briefId`) — cards com foto/inicial, nome, empresa, especialidade, localização, estilos, **% de compatibilidade**
+7. **Perfil do profissional** (`/profissionais/:id`) — bio, experiência, faixa de investimento, estilos, portfólio (link), botão "Tenho interesse" quando veio de um match
+8. **Confirmação de match** (estado dentro da própria tela de perfil) — "É uma combinação!" → abre a conversa automaticamente
 
-## Profissional
+## Área comum (pós-login)
 
-10. **Onboarding de profissional** — bio, documento (CPF/CNPJ), especialidades, raio de atuação, cidade. Tela de "aguardando aprovação" após submeter.
-11. **Dashboard do profissional** — lista de oportunidades recebidas (novas, visualizadas, respondidas, expiradas)
-12. **Detalhe da oportunidade** — descrição da necessidade do cliente + ação: enviar proposta ou recusar
-13. **Enviar proposta** — formulário: preço, prazo estimado, mensagem
-14. **Mensagens** — igual ao do cliente (componente compartilhado)
-15. **Meu perfil / configurações** — editar perfil profissional
+9. **Dashboard** (`/dashboard`) — cliente: atalhos para novo projeto e conversas · profissional: lista de leads ou prompt de onboarding
+10. **Conversas** (`/conversas`) — lista de conversas ativas
+11. **Chat** (`/conversas/:id`) — mensagens (polling, sem WebSocket ainda)
 
-## Admin (interno, não é produto para usuário final)
+## Área do profissional
 
-16. **Fila de aprovação de profissionais** — aprovar/rejeitar cadastros pendentes (curadoria manual, ver [FLUXOS.md](FLUXOS.md))
-17. **Lista de necessidades** — visão geral para debug/suporte (ex: identificar cidades sem cobertura)
+12. **Onboarding/edição de perfil** (`/perfil-profissional`) — tipo (arquiteto/engenheiro/designer/construtora), empresa, bio, localização, raio de atuação, faixa de investimento, portfólio, estilos trabalhados
+13. **Dashboard de leads** — dentro de `/dashboard`: cada lead mostra objetivo, área, cidade, orçamento e % de compatibilidade; link direto para a conversa quando o cliente já demonstrou interesse
 
-> Pode começar como uma tela simples protegida por role=admin dentro do mesmo React app, ou até um painel Laravel Nova/Filament separado — não vale construir do zero agora. **Recomendo Filament**: é Laravel-nativo, gera CRUD admin em horas, e resolve as telas 16-17 sem você escrever UI nenhuma.
+## Admin (interno, ainda não construído)
 
-## Fora do MVP (não desenhar telas ainda)
+14. **Fila de aprovação de profissionais** — hoje é feita manualmente via banco (`UPDATE professional_profiles SET status='approved'`). Construir com Filament é o próximo passo natural quando o volume justificar.
 
-- Jornada visual (linha do tempo de etapas tipo o exemplo do briefing) — é a peça mais vistosa da visão de longo prazo, mas também a que mais muda depois que vocês tiverem uso real. Desenhar agora é desenhar no escuro.
-- Histórico do imóvel / ficha do imóvel
-- Avaliações e reviews
+## Fora do MVP (não desenhar ainda)
+
+- Galeria de inspiração estilo Houzz/ArchDaily (fotos de projetos, salvar referências) — cold-start de conteúdo, ver [ROADMAP.md](ROADMAP.md)
+- Avaliações e reviews visíveis no perfil
 - Pagamentos/checkout
-- Marketplace de fornecedores
+- Ficha/histórico do imóvel
