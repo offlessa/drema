@@ -12,8 +12,8 @@ Route::get('/health', function () {
     return response()->json(['status' => 'ok', 'app' => config('app.name')]);
 });
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth');
 
 Route::get('/styles', [StyleController::class, 'index']);
 Route::get('/professionals/{professionalProfile}', [ProfessionalProfileController::class, 'showPublic']);
