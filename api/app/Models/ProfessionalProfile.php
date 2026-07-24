@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ProfessionalStatus;
 use App\Enums\ProfessionalType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProfessionalProfile extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'professional_type', 'company_name', 'bio', 'city', 'state',
-        'service_radius_km', 'years_experience', 'budget_min', 'budget_max', 'portfolio_url',
+        'user_id', 'professional_type', 'company_name', 'bio', 'city', 'state',
+        'service_radius_km', 'years_experience', 'budget_min', 'budget_max', 'portfolio_url', 'status',
     ];
 
     protected function casts(): array

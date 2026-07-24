@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use App\Enums\ProjectGoal;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProjectBrief extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'goal', 'city', 'state', 'area_m2', 'rooms_count', 'style_id',
+        'client_id', 'goal', 'city', 'state', 'area_m2', 'rooms_count', 'style_id',
         'budget_min', 'budget_max', 'timeline', 'description', 'reference_urls',
     ];
 
