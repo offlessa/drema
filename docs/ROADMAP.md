@@ -15,6 +15,14 @@ Métrica de sucesso (definir antes de codar, não depois):
 
 Sem essas métricas instrumentadas desde o dia 1, vocês não vão saber se o MVP "funcionou" — só terão opinião.
 
+Instrumentado como comando Artisan (não como pipeline de eventos — todo dado necessário já existe em `project_briefs`/`matches`/`conversations`/`messages`, não precisa de infra nova):
+
+```
+php artisan metrics:fase0 [--city="Nome da Cidade"]
+```
+
+Ver `api/app/Console/Commands/Fase0Metrics.php`.
+
 ## Fase 1 — Consolidar o loop (pós-validação inicial)
 Só entra aqui depois que a Fase 0 mostrar sinal real de tração na cidade piloto.
 
