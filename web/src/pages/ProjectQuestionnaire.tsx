@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useMe } from '../hooks/useAuth'
 import { useStyles, useSubmitProjectBrief } from '../hooks/useDomain'
+import { AppHeader } from '../components/AppHeader'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Select } from '../components/ui/Select'
@@ -75,10 +76,12 @@ export function ProjectQuestionnaire() {
   }
 
   return (
-    <div className="min-h-svh flex items-center justify-center px-6 py-12">
+    <div className="min-h-svh flex flex-col">
+      <AppHeader />
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
       <div className="w-full max-w-xl">
-        <p className="uppercase tracking-[0.2em] text-xs text-gold font-medium mb-4 text-center">Passo 2 de 2</p>
-        <h1 className="font-serif text-3xl text-ink mb-2 text-center">Conte mais sobre o seu projeto</h1>
+        <p className="uppercase tracking-[0.2em] text-xs text-teal font-medium mb-4 text-center">Passo 2 de 2</p>
+        <h1 className="font-display text-3xl text-ink mb-2 text-center">Conte mais sobre o seu projeto</h1>
         <p className="text-muted text-center mb-10">{goalLabels[goal]}</p>
 
         <form onSubmit={handleSubmit} className="space-y-4 bg-white border border-border rounded-2xl p-6 md:p-8">
@@ -191,6 +194,7 @@ export function ProjectQuestionnaire() {
             Encontrar profissionais compatíveis
           </Button>
         </form>
+      </div>
       </div>
     </div>
   )

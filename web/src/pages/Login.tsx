@@ -29,8 +29,9 @@ export function Login() {
   return (
     <div className="min-h-svh flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-neutral-900 text-center mb-1">Entrar</h1>
-        <p className="text-neutral-500 text-center mb-6">Do sonho ao imóvel.</p>
+        <img src="/logo-icon.png" alt="Drema" className="h-12 w-auto mx-auto mb-6" />
+        <h1 className="text-2xl font-display font-semibold text-ink text-center mb-1">Entrar</h1>
+        <p className="text-muted text-center mb-6">Do sonho ao imóvel.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -56,7 +57,7 @@ export function Login() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-neutral-500 mt-6">
+        <p className="text-center text-sm text-muted mt-6">
           Ainda não tem conta?{' '}
           <Link to="/cadastro" className="text-primary font-medium">
             Criar conta

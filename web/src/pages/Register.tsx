@@ -39,8 +39,9 @@ export function Register() {
   return (
     <div className="min-h-svh flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-neutral-900 text-center mb-1">Criar conta</h1>
-        <p className="text-neutral-500 text-center mb-6">Do sonho ao imóvel.</p>
+        <img src="/logo-icon.png" alt="Drema" className="h-12 w-auto mx-auto mb-6" />
+        <h1 className="text-2xl font-display font-semibold text-ink text-center mb-1">Criar conta</h1>
+        <p className="text-muted text-center mb-6">Do sonho ao imóvel.</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
@@ -121,7 +122,7 @@ export function Register() {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-neutral-500 mt-6">
+        <p className="text-center text-sm text-muted mt-6">
           Já tem conta?{' '}
           <Link to="/login" className="text-primary font-medium">
             Entrar

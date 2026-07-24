@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useConversations } from '../hooks/useDomain'
+import { AppHeader } from '../components/AppHeader'
 
 export function Conversations() {
   const { data: conversations, isLoading } = useConversations()
 
   return (
-    <div className="min-h-svh px-6 py-12">
+    <div className="min-h-svh">
+      <AppHeader />
+      <div className="px-6 py-12">
       <div className="max-w-xl mx-auto">
-        <h1 className="font-serif text-2xl text-ink mb-6">Conversas</h1>
+        <h1 className="font-display text-2xl text-ink mb-6">Conversas</h1>
 
         {isLoading && <p className="text-muted">Carregando...</p>}
         {!isLoading && conversations?.length === 0 && (
@@ -25,6 +28,7 @@ export function Conversations() {
             </Link>
           ))}
         </div>
+      </div>
       </div>
     </div>
   )

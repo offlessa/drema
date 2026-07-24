@@ -1,23 +1,22 @@
 import { Link } from 'react-router-dom'
-import { useMe, useLogout } from '../hooks/useAuth'
+import { useMe } from '../hooks/useAuth'
 import { useLeads, useMyProfessionalProfile } from '../hooks/useDomain'
-import { Button } from '../components/ui/Button'
+import { AppHeader } from '../components/AppHeader'
 import { goalLabels } from '../lib/labels'
 
 export function Dashboard() {
   const { data: user } = useMe()
-  const logoutMutation = useLogout()
 
   if (user?.role === 'professional') {
     return <ProfessionalHome />
   }
 
   return (
-    <div className="min-h-svh px-6 py-12">
-      <TopBar name={user?.name} onLogout={() => logoutMutation.mutate()} />
+    <div className="min-h-svh">
+      <AppHeader />
 
-      <div className="max-w-xl mx-auto mt-10 text-center">
-        <h1 className="font-serif text-2xl text-ink mb-2">Olá, {user?.name}</h1>
+      <div className="max-w-xl mx-auto mt-10 text-center px-6 pb-12">
+        <h1 className="font-display text-2xl text-ink mb-2">Olá, {user?.name}</h1>
         <p className="text-muted mb-8">Pronto para dar o próximo passo no seu projeto?</p>
 
         <div className="grid gap-3">
@@ -40,32 +39,33 @@ export function Dashboard() {
 }
 
 function ProfessionalHome() {
-  const { data: user } = useMe()
-  const logoutMutation = useLogout()
   const { data: profile } = useMyProfessionalProfile()
   const { data: leads } = useLeads()
 
   if (profile === null) {
     return (
-      <div className="min-h-svh flex items-center justify-center px-6 text-center">
-        <div className="max-w-sm">
-          <h1 className="font-serif text-2xl text-ink mb-2">Complete seu perfil profissional</h1>
-          <p className="text-muted mb-6">Precisamos de algumas informações para começar a te enviar leads compatíveis.</p>
-          <Link to="/perfil-profissional" className="inline-block rounded-full bg-primary text-white px-6 py-3 font-medium">
-            Completar perfil
-          </Link>
+      <div className="min-h-svh">
+        <AppHeader />
+        <div className="flex items-center justify-center px-6 text-center mt-10">
+          <div className="max-w-sm">
+            <h1 className="font-display text-2xl text-ink mb-2">Complete seu perfil profissional</h1>
+            <p className="text-muted mb-6">Precisamos de algumas informações para começar a te enviar leads compatíveis.</p>
+            <Link to="/perfil-profissional" className="inline-block rounded-full bg-primary text-white px-6 py-3 font-medium">
+              Completar perfil
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-svh px-6 py-12">
-      <TopBar name={user?.name} onLogout={() => logoutMutation.mutate()} />
+    <div className="min-h-svh">
+      <AppHeader />
 
-      <div className="max-w-2xl mx-auto mt-10">
+      <div className="max-w-2xl mx-auto mt-10 px-6 pb-12">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-serif text-2xl text-ink">Novos projetos compatíveis</h1>
+          <h1 className="font-display text-2xl text-ink">Novos projetos compatíveis</h1>
           <Link to="/perfil-profissional" className="text-sm text-primary">
             Editar perfil
           </Link>
@@ -101,20 +101,6 @@ function ProfessionalHome() {
           ))}
           {leads?.length === 0 && <p className="text-muted text-center">Nenhum projeto compatível ainda.</p>}
         </div>
-      </div>
-    </div>
-  )
-}
-
-function TopBar({ name, onLogout }: { name?: string; onLogout: () => void }) {
-  return (
-    <div className="max-w-2xl mx-auto flex items-center justify-between">
-      <span className="font-serif text-lg text-ink">Drema</span>
-      <div className="flex items-center gap-4 text-sm">
-        <span className="text-muted">{name}</span>
-        <Button variant="ghost" className="w-auto px-3 py-1.5" onClick={onLogout}>
-          Sair
-        </Button>
       </div>
     </div>
   )

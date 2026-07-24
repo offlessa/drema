@@ -4,7 +4,7 @@ export function Landing() {
   return (
     <div className="min-h-svh flex flex-col">
       <header className="flex items-center justify-between px-6 md:px-12 py-6">
-        <span className="font-serif text-xl text-ink">Drema</span>
+        <img src="/logo-horizontal.png" alt="Drema" className="h-8 w-auto" />
         <nav className="flex items-center gap-4 text-sm">
           <Link to="/login" className="text-muted hover:text-ink">
             Entrar
@@ -20,8 +20,8 @@ export function Landing() {
 
       <main className="flex-1 flex items-center justify-center px-6 text-center">
         <div className="max-w-2xl">
-          <p className="uppercase tracking-[0.2em] text-xs text-gold font-medium mb-6">Do sonho ao imóvel</p>
-          <h1 className="font-serif text-4xl md:text-6xl leading-tight text-ink mb-6">
+          <p className="uppercase tracking-[0.2em] text-xs text-teal font-medium mb-6">Do sonho ao imóvel</p>
+          <h1 className="font-display text-4xl md:text-6xl leading-tight text-ink mb-6">
             Encontre o profissional ideal para transformar sua ideia em realidade.
           </h1>
           <p className="text-muted text-lg mb-10 max-w-lg mx-auto">

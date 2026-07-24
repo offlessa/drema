@@ -1,6 +1,6 @@
 # Drema — Design System (v0, implementado)
 
-> Paleta e tipografia abaixo refletem o que está em `web/src/index.css` (tokens Tailwind v4 via `@theme`). Pivotado de um placeholder terracota para uma paleta premium creme/verde-amarronzado/dourado, pedida explicitamente para posicionar a marca como "realizar sonhos", inspirada em Houzz/Apple/Pinterest.
+> Paleta e tipografia abaixo refletem o que está em `web/src/index.css` (tokens Tailwind v4 via `@theme`). Pivotado pela segunda vez: a v0 original (creme/verde-amarronzado/dourado) foi substituída por navy + teal para seguir a identidade visual da logo real (`web/public/logo-full.png`) — cores tiradas por amostragem de pixel do arquivo, não estimadas a olho.
 
 ## 1. Princípios
 
@@ -12,29 +12,35 @@
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--color-cream` | `#f7f2e8` | fundo base |
-| `--color-cream-dark` | `#efe7d6` | fundo de cards secundários, badges neutros |
-| `--color-ink` | `#2b2a24` | texto principal |
-| `--color-muted` | `#6c6559` | texto secundário |
-| `--color-border` | `#e3dac6` | bordas |
-| `--color-primary` | `#4f5f3f` (verde-amarronzado) | ações principais, links, foco |
-| `--color-primary-hover` | `#3d4a31` | |
-| `--color-gold` | `#b6905a` (dourado discreto) | destaques pontuais — eyebrow text, badges de especialidade, nunca em área grande |
-| `--color-success` / `--color-warning` / `--color-danger` | verde/âmbar/terracota mutados | status (compatibilidade, pendências) — tons dessaturados para não destoar da paleta quente |
+| `--color-surface` | `#ffffff` | fundo base |
+| `--color-surface-alt` | `#eef2f6` | fundo de cards secundários, badges neutros, avatar placeholder |
+| `--color-ink` | `#14213d` | texto principal |
+| `--color-muted` | `#5b6b82` | texto secundário |
+| `--color-border` | `#dce3ea` | bordas |
+| `--color-primary` | `#0b2c52` (navy da logo) | ações principais, links, foco |
+| `--color-primary-hover` | `#082140` | |
+| `--color-teal` | `#2fb39b` (teal da logo) | destaques pontuais — eyebrow text, badges de especialidade, nunca em área grande |
+| `--color-success` / `--color-warning` / `--color-danger` | verde/âmbar/terracota mutados | status (compatibilidade, pendências) |
 
-Evitado de propósito: azul (cor "padrão" de SaaS/marketplace — Loft, QuintoAndar) e branco puro como fundo dominante (fica frio; creme mantém o "premium quente" pedido).
+Antes evitávamos azul de propósito (para não parecer "mais um marketplace" tipo Loft/QuintoAndar). Isso mudou: a logo real da marca é navy + teal, e a logo manda — consistência de marca vale mais que a preferência estética anterior. Branco como fundo dominante também foi decisão consciente desta vez (bate com o fundo da logo).
 
 ## 3. Tipografia
 
-- **Serif de destaque:** Fraunces — títulos (`font-serif`), dá o tom editorial/arquitetônico.
+- **Display (títulos):** Poppins — via token `--font-display`, classe `font-display` (nome mantido nas telas por não valer o custo de renomear todo uso; o valor é que mudou de Fraunces/serif para Poppins/geométrico, para casar com a wordmark da logo).
 - **Sans para UI:** Inter — corpo de texto, formulários, botões.
 - Carregadas via Google Fonts em `index.html`. Escala Tailwind padrão, sem customização.
 
-## 4. Espaçamento
+## 4. Logo
+
+Assets derivados de `web/public/logo-full.png` (arquivo original, com tagline — usar só se precisar do lockup completo):
+- `logo-icon.png` — só o símbolo (D + casa + caminho), para favicon e contextos compactos.
+- `logo-horizontal.png` — símbolo + wordmark "Drema", sem tagline, para headers de tela.
+
+## 5. Espaçamento
 
 Escala padrão Tailwind (4px). Sem escala customizada.
 
-## 5. Componentes base (implementados em `web/src/components/`)
+## 6. Componentes base (implementados em `web/src/components/`)
 
 | Componente | Onde é usado |
 |---|---|
@@ -45,10 +51,10 @@ Escala padrão Tailwind (4px). Sem escala customizada.
 
 Ainda não extraídos como componentes genéricos (deliberado — esperar repetição real antes de abstrair): `StatusBadge`, `EmptyState`, `Toast`. Hoje cada tela resolve isso inline.
 
-## 6. Tom de voz
+## 7. Tom de voz
 
 Direto, sem jargão técnico nem jargão de startup. Termos técnicos (ex: "ART") sempre explicados em uma frase quando aparecerem.
 
-## 7. Próximo passo real (Figma)
+## 8. Próximo passo real (Figma)
 
 Ainda não bloqueante — o MVP nasceu direto em código com esses tokens. Vale considerar Figma quando a galeria de inspiração (fase 1 do roadmap) entrar em cena, por ser uma peça mais visual/editorial.

@@ -2,21 +2,23 @@
 
 @theme {
   --font-sans: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
-  --font-serif: "Fraunces", Georgia, serif;
+  /* Nome mantido por compatibilidade com as classes font-display já usadas nas telas;
+     não é mais um serif — é o geométrico bold da wordmark da logo. */
+  --font-display: "Poppins", "Inter", system-ui, sans-serif;
 
-  /* Premium, warm palette: cream base, brownish-green primary, discreet gold accent. */
-  --color-cream: #f7f2e8;
-  --color-cream-dark: #efe7d6;
-  --color-ink: #2b2a24;
-  --color-muted: #6c6559;
-  --color-border: #e3dac6;
+  /* Navy + teal, tirados por amostragem de pixel de web/public/logo-full.png. */
+  --color-surface: #ffffff;
+  --color-surface-alt: #eef2f6;
+  --color-ink: #14213d;
+  --color-muted: #5b6b82;
+  --color-border: #dce3ea;
 
-  --color-primary: #4f5f3f;
-  --color-primary-hover: #3d4a31;
-  --color-gold: #b6905a;
-  --color-gold-hover: #a17c48;
+  --color-primary: #0b2c52;
+  --color-primary-hover: #082140;
+  --color-teal: #2fb39b;
+  --color-teal-hover: #279a85;
 
-  --color-success: #4c7a52;
+  --color-success: #2f9e6e;
   --color-warning: #b8863b;
   --color-danger: #a6483a;
 }
@@ -25,6 +27,6 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   color-scheme: light;
-  background: var(--color-cream);
+  background: var(--color-surface);
   color: var(--color-ink);
 }

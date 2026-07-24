@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMe } from '../hooks/useAuth'
 import { useMyProfessionalProfile, useSaveProfessionalProfile, useStyles } from '../hooks/useDomain'
+import { AppHeader } from '../components/AppHeader'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Select } from '../components/ui/Select'
@@ -72,9 +73,11 @@ export function ProfessionalOnboarding() {
   }
 
   return (
-    <div className="min-h-svh px-6 py-12">
+    <div className="min-h-svh">
+      <AppHeader />
+      <div className="px-6 py-12">
       <div className="max-w-xl mx-auto">
-        <h1 className="font-serif text-2xl text-ink mb-1">Seu perfil profissional</h1>
+        <h1 className="font-display text-2xl text-ink mb-1">Seu perfil profissional</h1>
         <p className="text-muted mb-8">
           Essas informações definem em quais projetos você aparece como compatível.
           {existingProfile?.status === 'pending' && ' Seu perfil está em análise para aprovação.'}
@@ -198,6 +201,7 @@ export function ProfessionalOnboarding() {
             Salvar perfil
           </Button>
         </form>
+      </div>
       </div>
     </div>
   )

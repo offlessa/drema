@@ -13,7 +13,7 @@ export function MatchCard({ match }: { match: ProjectMatch }) {
       className="block bg-white border border-border rounded-2xl p-5 hover:shadow-md hover:border-primary/40 transition-all"
     >
       <div className="flex items-start justify-between mb-3">
-        <div className="h-14 w-14 rounded-full bg-cream-dark flex items-center justify-center font-serif text-xl text-primary">
+        <div className="h-14 w-14 rounded-full bg-surface-alt flex items-center justify-center font-display text-xl text-primary">
           {professional.name.charAt(0)}
         </div>
         <span className="rounded-full bg-primary/10 text-primary text-xs font-semibold px-3 py-1">
@@ -23,7 +23,7 @@ export function MatchCard({ match }: { match: ProjectMatch }) {
 
       <p className="font-medium text-ink">{professional.name}</p>
       {professional.company_name && <p className="text-sm text-muted">{professional.company_name}</p>}
-      <p className="text-sm text-gold mt-1">{professionalTypeLabels[professional.professional_type]}</p>
+      <p className="text-sm text-teal mt-1">{professionalTypeLabels[professional.professional_type]}</p>
 
       <div className="flex items-center gap-3 text-xs text-muted mt-3">
         <span>
@@ -35,7 +35,7 @@ export function MatchCard({ match }: { match: ProjectMatch }) {
       {professional.styles.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-3">
           {professional.styles.map((style) => (
-            <span key={style.id} className="text-xs bg-cream-dark text-muted rounded-full px-2.5 py-1">
+            <span key={style.id} className="text-xs bg-surface-alt text-muted rounded-full px-2.5 py-1">
               {style.name}
             </span>
           ))}

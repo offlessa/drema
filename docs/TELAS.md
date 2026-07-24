@@ -1,6 +1,6 @@
 # Drema — Telas (MVP)
 
-> Substitui a versão anterior (formulário simples de necessidade). O fluxo agora é uma jornada guiada de descoberta + match, conforme pivotado. Web responsivo, React + Vite + Tailwind, paleta creme/verde-amarronzado/dourado (ver [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)).
+> Substitui a versão anterior (formulário simples de necessidade). O fluxo agora é uma jornada guiada de descoberta + match, conforme pivotado. Web responsivo, React + Vite + Tailwind, paleta navy/teal seguindo a logo (ver [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)).
 
 ## Públicas
 
