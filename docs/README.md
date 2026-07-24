@@ -6,12 +6,14 @@ Escopo destes documentos: **MVP**, validado em uma cidade/região piloto, por um
 
 ## Índice
 
-1. [Arquitetura](ARQUITETURA.md) — stack, topologia, decisões técnicas e porquês
-2. [Banco de Dados](BANCO_DE_DADOS.md) — schema MySQL do MVP
-3. [Fluxos](FLUXOS.md) — jornadas de cliente e profissional passo a passo
-4. [Telas](TELAS.md) — inventário de telas do MVP
-5. [Design System](DESIGN_SYSTEM.md) — tokens e componentes base
-6. [Roadmap](ROADMAP.md) — fases pós-MVP e critério para avançar entre elas
+1. [Manifesto](MANIFESTO.md) — por que a Drema existe e princípios de produto
+2. [Visão](VISAO.md) — pitch de posicionamento e direção de longo prazo
+3. [Arquitetura](ARQUITETURA.md) — stack, topologia, decisões técnicas e porquês
+4. [Banco de Dados](BANCO_DE_DADOS.md) — schema MySQL do MVP
+5. [Fluxos](FLUXOS.md) — jornadas de cliente e profissional passo a passo
+6. [Telas](TELAS.md) — inventário de telas do MVP
+7. [Design System](DESIGN_SYSTEM.md) — tokens e componentes base
+8. [Roadmap](ROADMAP.md) — fases pós-MVP e critério para avançar entre elas
 
 ## Estado atual
 
